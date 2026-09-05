@@ -36,12 +36,12 @@
   "entity": {
     "sensor": {
       "planning": {
-        "name": "Planning"
+        "name": "planning_espace_citoyen_coueron"
       }
     },
     "button": {
       "refresh": {
-        "name": "Actualiser le planning"
+        "name": "planning_espace_citoyen_rafraichir_reservation"
       }
     }
   }
