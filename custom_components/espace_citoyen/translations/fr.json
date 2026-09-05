@@ -1,1 +1,48 @@
-fr
+{
+  "title": "Espace Citoyen",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connexion à Espace Citoyen",
+        "description": "Renseignez les identifiants de votre compte Espace Citoyen.",
+        "data": {
+          "username": "Identifiant",
+          "password": "Mot de passe"
+        },
+        "data_description": {
+          "username": "Identifiant utilisé pour se connecter à l'Espace Citoyen.",
+          "password": "Mot de passe du compte Espace Citoyen."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Reconnecter Espace Citoyen",
+        "description": "L'authentification a échoué. Saisissez de nouveau vos identifiants.",
+        "data": {
+          "username": "Identifiant",
+          "password": "Mot de passe"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossible de se connecter au site Espace Citoyen.",
+      "invalid_auth": "Identifiant ou mot de passe incorrect.",
+      "unknown": "Une erreur inattendue s'est produite."
+    },
+    "abort": {
+      "already_configured": "Ce compte est déjà configuré.",
+      "reauth_successful": "Réauthentification réussie."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "planning": {
+        "name": "Planning"
+      }
+    },
+    "button": {
+      "refresh": {
+        "name": "Actualiser le planning"
+      }
+    }
+  }
+}
