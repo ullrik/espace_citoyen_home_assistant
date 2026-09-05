@@ -28,7 +28,7 @@ class EspaceCitoyenRefreshButton(
     """Button that forces a new scrape."""
 
     _attr_has_entity_name = True
-    _attr_name = "Actualiser le planning"
+    _attr_name = "Planning espace citoyen Coueron - rafraichir reservations"
     _attr_icon = "mdi:refresh"
 
     def __init__(
