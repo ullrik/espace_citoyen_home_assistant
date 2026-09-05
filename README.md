@@ -41,8 +41,8 @@ et rechercher :
 
 L'intégration crée notamment :
 
-    sensor.espace_citoyen_planning
-    button.espace_citoyen_actualiser_le_planning
+    sensor.planning_espace_citoyen_coueron
+    button.planning_espace_citoyen_coueron_rafraichir_reservation
 
 Les entity_id exacts peuvent varier si des entités portant ces noms existent déjà.
 Utiliser les noms affichés dans Home Assistant pour confirmer.
