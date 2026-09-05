@@ -1,0 +1,14 @@
+{
+  "domain": "espace_citoyen",
+  "name": "Espace Citoyen",
+  "codeowners": [],
+  "config_flow": true,
+  "documentation": "https://www.espace-citoyens.net",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "requirements": [
+    "beautifulsoup4==4.13.3"
+  ],
+  "single_config_entry": true,
+  "version": "1.0.0"
+}
