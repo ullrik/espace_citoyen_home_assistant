@@ -35,7 +35,7 @@ class EspaceCitoyenPlanningSensor(
     """Planning sensor exposing the two-week planning as an attribute."""
 
     _attr_has_entity_name = True
-    _attr_name = "Planning"
+    _attr_name = "Planning espace citoyen Coueron"
     _attr_icon = "mdi:calendar-school"
     _attr_device_class = SensorDeviceClass.TIMESTAMP
 
