@@ -41,7 +41,7 @@
     },
     "button": {
       "refresh": {
-        "name": "planning_espace_citoyen_rafraichir_reservation"
+        "name": "planning_espace_citoyen_coueron_rafraichir_reservation"
       }
     }
   }
