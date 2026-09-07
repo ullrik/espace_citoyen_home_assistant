@@ -20,6 +20,7 @@ from .const import (
     CRENEAUX,
     LOGIN_PAGE_URL,
     LOGIN_URL,
+    REGEX_RESERVATION,
     RESERVATION_TYPES,
 )
 
@@ -117,7 +118,7 @@ class EspaceCitoyenApi:
     def _get_reservation_urls(html: str) -> dict[str, str]:
         """Extract reservation URLs from the citizen account page."""
         matches = re.findall(
-            r'href="([^"]*NouvelleDemandeReservation/\d+/\d+/\d+/\d+)"',
+            REGEX_RESERVATION,
             html,
         )
 
@@ -196,12 +197,6 @@ class EspaceCitoyenApi:
         session = None
         try:
             session = self._login()
-            account_url = f"{BASE_URL}{CITY_PATH}/CompteCitoyen"
-
-            response = session.get(account_url, timeout=(10, 30))
-            response.raise_for_status()
-
-            self._reservation_urls = self._get_reservation_urls(response.text)
         except AuthenticationError:
             raise
         except requests.RequestException as err:
@@ -277,15 +272,20 @@ class EspaceCitoyenApi:
         try:
             session = self._login()
 
-            if not self._reservation_urls:
-                self.authenticate()
-                #raise EspaceCitoyenConnectionError(
-                #    "Les URLs de réservation ne sont pas disponibles. "
-                #    "Appelez authenticate() avant get_planning()."
-                #)
+            account_url = f"{BASE_URL}{CITY_PATH}/CompteCitoyen"
+
+            response = session.get(account_url, timeout=(10, 30))
+            response.raise_for_status()
+
+            reservation_urls = self._get_reservation_urls(response.text)
+
+            if not reservation_urls:
+                raise EspaceCitoyenConnectionError(
+                    "Les URLs de réservation ne sont pas disponibles. "
+                )
             
             #for reservation_url in reservation_urls.values():
-            for reservation_url in self._reservation_urls:
+            for reservation_url in reservation_urls:
                 data = self._get_calendrier_reservation(
                     session,
                     reservation_url,
