@@ -166,21 +166,6 @@ changer cette ligne :
   {% set monday = today - timedelta(days=today.weekday()) + timedelta(days=7) %}
 ```
 
-Attention : dans le script d'origine le créneau du matin s'appelle `peri_mat`
-(et non `peri_matin`). L'intégration conserve volontairement ce nom.
-
-## URLs de réservation
-
-La version 1.0.0 conserve les quatre URLs spécifiques présentes dans le script
-d'origine ainsi que le mapping `idUnite -> créneau`.
-
-Elles sont dans :
-
-    custom_components/espace_citoyen/const.py
-
-Si les identifiants d'inscription changent à la prochaine année scolaire, ces URLs
-pourront devoir être mises à jour. Une évolution ultérieure pourra chercher à les
-découvrir automatiquement depuis le compte.
 
 ## Débogage
 
