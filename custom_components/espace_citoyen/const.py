@@ -17,25 +17,12 @@ CITY_PATH = "/ville-coueron/espace-citoyens"
 LOGIN_PAGE_URL = f"{BASE_URL}{CITY_PATH}/"
 LOGIN_URL = f"{BASE_URL}{CITY_PATH}/Home/Logon"
 
-# URLs reprises du script d'origine.
-RESERVATION_URLS: dict[str, str] = {
-    "Periscolaire": (
-        f"{BASE_URL}{CITY_PATH}/DemandeEnfance/"
-        "NouvelleDemandeReservation/3/292685/15/965"
-    ),
-    "ALP_Mercredi": (
-        f"{BASE_URL}{CITY_PATH}/DemandeEnfance/"
-        "NouvelleDemandeReservation/3/292983/15/268"
-    ),
-    "Ateliers": (
-        f"{BASE_URL}{CITY_PATH}/DemandeEnfance/"
-        "NouvelleDemandeReservation/3/292833/15/967"
-    ),
-    "Restauration_Scolaire": (
-        f"{BASE_URL}{CITY_PATH}/DemandeEnfance/"
-        "NouvelleDemandeReservation/3/292535/15/2070"
-    ),
-}
+RESERVATION_TYPES: tuple[str, ...] = (
+    "Periscolaire",
+    "ALP_Mercredi",
+    "Ateliers",
+    "Restauration_Scolaire",
+)
 
 CRENEAUX: dict[int, str] = {
     1: "repas_midi",
