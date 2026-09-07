@@ -58,7 +58,7 @@ Attributs principaux :
 `planning` contient uniquement la semaine courante et la semaine suivante.
 
 ## Exemple Markdown Lovelace
-
+```
 type: markdown
 content: >
   {% set planning = state_attr('sensor.planning_espace_citoyen_coueron',
@@ -159,11 +159,12 @@ card_mod:
         padding-right: 4px;
         text-align: center;
       }
-
+```
 Pour avoir la semaine suivante : 
 changer cette ligne : 
+```
   {% set monday = today - timedelta(days=today.weekday()) + timedelta(days=7) %}
-
+```
 
 Attention : dans le script d'origine le créneau du matin s'appelle `peri_mat`
 (et non `peri_matin`). L'intégration conserve volontairement ce nom.
