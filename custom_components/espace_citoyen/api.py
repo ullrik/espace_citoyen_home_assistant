@@ -20,7 +20,7 @@ from .const import (
     CRENEAUX,
     LOGIN_PAGE_URL,
     LOGIN_URL,
-    RESERVATION_URLS,
+    RESERVATION_TYPES,
 )
 
 
@@ -42,6 +42,7 @@ class EspaceCitoyenApi:
     def __init__(self, username: str, password: str) -> None:
         self._username = username
         self._password = password
+        self._reservation_urls: list[str] = []
 
     @staticmethod
     def _convertir_date_fr(number: int | str) -> str:
@@ -112,6 +113,32 @@ class EspaceCitoyenApi:
 
         return str(token)
 
+    @staticmethod
+    def _get_reservation_urls(html: str) -> dict[str, str]:
+        """Extract reservation URLs from the citizen account page."""
+        matches = re.findall(
+            r'href="([^"]*NouvelleDemandeReservation/\d+/\d+/\d+/\d+)"',
+            html,
+        )
+
+        # Supprime les éventuels doublons tout en conservant l'ordre.
+        matches = list(dict.fromkeys(matches))
+
+        if len(matches) != len(RESERVATION_TYPES):
+            raise EspaceCitoyenConnectionError(
+                f"Nombre inattendu de calendriers trouvés : "
+                f"{len(matches)} au lieu de {len(RESERVATION_TYPES)}."
+            )
+
+        #return {
+        #    name: urljoin(BASE_URL, match)
+        #    for name, match in zip(RESERVATION_TYPES, matches)
+        #}
+        return [
+            urljoin(BASE_URL, match)
+            for match in matches
+        ]
+
     def _login(self) -> requests.Session:
         session = self._new_session()
         token = self._get_verification_token(session)
@@ -170,8 +197,11 @@ class EspaceCitoyenApi:
         try:
             session = self._login()
             account_url = f"{BASE_URL}{CITY_PATH}/CompteCitoyen"
+
             response = session.get(account_url, timeout=(10, 30))
             response.raise_for_status()
+
+            self._reservation_urls = self._get_reservation_urls(response.text)
         except AuthenticationError:
             raise
         except requests.RequestException as err:
@@ -247,7 +277,14 @@ class EspaceCitoyenApi:
         try:
             session = self._login()
 
-            for reservation_url in RESERVATION_URLS.values():
+            if not self._reservation_urls:
+                raise EspaceCitoyenConnectionError(
+                    "Les URLs de réservation ne sont pas disponibles. "
+                    "Appelez authenticate() avant get_planning()."
+                )
+            
+            #for reservation_url in reservation_urls.values():
+            for reservation_url in self._reservation_urls:
                 data = self._get_calendrier_reservation(
                     session,
                     reservation_url,
