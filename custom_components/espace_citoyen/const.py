@@ -17,6 +17,8 @@ CITY_PATH = "/ville-coueron/espace-citoyens"
 LOGIN_PAGE_URL = f"{BASE_URL}{CITY_PATH}/"
 LOGIN_URL = f"{BASE_URL}{CITY_PATH}/Home/Logon"
 
+REGEX_RESERVATION: r'href="([^"]*NouvelleDemandeReservation/\d+/\d+/\d+/\d+)"'
+
 RESERVATION_TYPES: tuple[str, ...] = (
     "Periscolaire",
     "ALP_Mercredi",
