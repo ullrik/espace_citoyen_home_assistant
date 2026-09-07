@@ -278,6 +278,7 @@ class EspaceCitoyenApi:
             session = self._login()
 
             if not self._reservation_urls:
+                #self.authenticate()
                 raise EspaceCitoyenConnectionError(
                     "Les URLs de réservation ne sont pas disponibles. "
                     "Appelez authenticate() avant get_planning()."
