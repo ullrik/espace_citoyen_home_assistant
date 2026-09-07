@@ -59,24 +59,111 @@ Attributs principaux :
 
 ## Exemple Markdown Lovelace
 
-    type: markdown
-    content: >
-      {% set planning = state_attr('sensor.espace_citoyen_planning', 'planning') or {} %}
+type: markdown
+content: >
+  {% set planning = state_attr('sensor.planning_espace_citoyen_coueron',
+  'planning') or {} %}
+  {% set ns = namespace(rows=[]) %}
 
-      ## 📚 Planning Scolaire
+  {# Semaine actuelle #}
+  {% set today = now().date() %}
+  {% set monday = today - timedelta(days=today.weekday()) %}
+  {% set sunday = monday + timedelta(days=6) %}
 
-      | Jour | 🌅 Matin | 🍽️ Midi | 🎨 Atelier | 🌙 Soir |
-      |------|---------|---------|---------|---------|
-      {% for date, info in planning.items() %}
-        {% if info.isActif %}
-          {% set r = info.reservations %}
-      | {{ info.date }} |
-      {{ '✅' if r.get('peri_mat') else '❌' }} |
-      {{ '✅' if r.get('repas_midi') else '❌' }} |
-      {{ '✅' if r.get('atelier_ville') else '❌' }} |
-      {{ '✅' if r.get('peri_soir') else '❌' }} |
-        {% endif %}
-      {% endfor %}
+  {% for date, info in planning.items() %}
+    {% set d = strptime(date, '%Y%m%d').date() %}
+
+    {% if monday <= d <= sunday %}
+      {% set r = info.reservations or {} %}
+      {% set weekday = d.weekday() %}
+
+      {# Icône du jour #}
+      {% if weekday >= 5 %}
+        {% set icon = '💤' %}
+      {% elif info.isFermeOuFerie %}
+        {% set icon = '🔴' %}
+      {% else %}
+        {% set icon = '🏫' %}
+      {% endif %}
+
+      {# Icône verrouillage #}
+      {% if info.isActif %}
+        {% set lock = '🟢' %}
+      {% else %}
+        {% set lock = '🔒' %}
+      {% endif %}
+
+      {% set matin = '✅' if r.get('peri_mat', false) else '—' %}
+      {% if r.get('repas_midi', false) %}
+        {% set midi = '✅' %}
+      {% elif r.get('peri_mercredi_midi', false) %}
+        {% set midi = '➡️' %}
+      {% else %}
+        {% set midi = '—' %}
+      {% endif %}
+      {% if r.get('peri_mercredi_midi', false) %}
+        {% set midi = midi ~ ' <small>12h30<small>' %}
+      {% endif %}
+      {% if r.get('peri_mercredi_midi', false) and r.get('alp_mercredi', false) %}
+        {% set atelier = '⚠️' %}
+      {% elif r.get('atelier_ville', false) or r.get('alp_mercredi', false) %}
+        {% set atelier = '✅' %}
+      {% else %}
+        {% set atelier = '—' %}
+      {% endif %}
+      {% if r.get('alp_mercredi', false) %}
+        {% set atelier = atelier ~ '<small>17h<small>' %}
+      {% endif %}
+      {% set soir = '✅' if r.get('peri_soir', false) else '—' %}
+
+      {% set ligne = '| ' ~ icon ~ '&nbsp;&nbsp;' ~ info.date.split(' ')[0] ~ ' ' ~ info.date.split(' ')[1] ~ '&ensp;' ~ lock ~ ' | ' ~ matin ~ ' | ' ~ midi ~ ' | ' ~ atelier ~ ' | ' ~ soir ~ ' |' %}
+
+      {% set ns.rows = ns.rows + [ligne] %}
+
+    {% endif %}
+  {% endfor %}
+
+
+  ### Cette semaine — du {{ monday.strftime('%d/%m') }} au {{
+  sunday.strftime('%d/%m/%Y') }}
+
+
+  | Jour | 🌅 Matin | 🍽️ Midi | 🎨 Atelier | 🌙 Soir |
+
+  |:---|:---:|:---:|:---:|:---:|
+
+  {{ ns.rows | join('\n') }}
+
+
+  **Légende :** 🏫 École &nbsp; 💤 Week-end &nbsp; 🔴 Fermé / vacances &nbsp; 🟢
+  Modifiable &nbsp; 🔒 Verrouillé
+card_mod:
+  style:
+    ha-markdown$: |
+      table {
+        width: 100%;
+        table-layout: auto;
+      }
+
+      table th:first-child,
+      table td:first-child {
+        width: auto;
+      }
+
+      table th:not(:first-child),
+      table td:not(:first-child) {
+        width: 42px;
+        min-width: 42px;
+        max-width: 42px;
+        padding-left: 4px;
+        padding-right: 4px;
+        text-align: center;
+      }
+
+Pour avoir la semaine suivante : 
+changer cette ligne : 
+  {% set monday = today - timedelta(days=today.weekday()) + timedelta(days=7) %}
+
 
 Attention : dans le script d'origine le créneau du matin s'appelle `peri_mat`
 (et non `peri_matin`). L'intégration conserve volontairement ce nom.
